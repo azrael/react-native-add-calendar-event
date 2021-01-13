@@ -100,8 +100,8 @@ public class AddCalendarEventModule extends ReactContextBaseJavaModule implement
             }
 
             if (config.hasKey("location")
-                    && config.getString("location") != null) {
-                calendarIntent.putExtra("eventLocation", config.getString("location"));
+                    && config.getMap("location").getString("title") != null) {
+                calendarIntent.putExtra("eventLocation", config.getMap("location").getString("title"));
             }
 
             if (config.hasKey("notes")

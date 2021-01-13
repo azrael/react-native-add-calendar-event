@@ -247,7 +247,22 @@ RCT_EXPORT_METHOD(presentEventEditingDialog:(NSDictionary *)options resolver:(RC
     NSDictionary *options = _eventOptions;
 
     event.title = [RCTConvert NSString:options[_title]];
-    event.location = options[_location] ? [RCTConvert NSString:options[_location]] : nil;
+    event.location = nil;
+
+    if (options[_location]) {
+        NSString *title = [RCTConvert NSString:[options[_location] objectForKey:@"title"]];
+        double latitude = [RCTConvert double:[options[_location] objectForKey:@"latitude"]];
+        double longitude = [RCTConvert double:[options[_location] objectForKey:@"longitude"]];
+
+        if (latitude && longitude) {
+            EKStructuredLocation* structuredLocation = [EKStructuredLocation locationWithTitle:title];
+            CLLocation* location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+            structuredLocation.geoLocation = location;
+            [event setValue:structuredLocation forKey:@"structuredLocation"];
+        } else {
+            event.location = title;
+        }
+    }
     
     if (options[_startDate]) {
         event.startDate = [RCTConvert NSDate:options[_startDate]];
